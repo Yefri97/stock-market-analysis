@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 5000;
 // configure body parser for AJAX requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('client/build'));
 
 // routes
 app.use(routes);

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const seasonsController = require('../controllers/seasonsController');
 
 router
-    .route('/')
-    .get(seasonsController.findAll);
+    .route('/getExchangeRateDaily')
+    .get(seasonsController.getExchangeRateDaily);
 
 module.exports = router;
