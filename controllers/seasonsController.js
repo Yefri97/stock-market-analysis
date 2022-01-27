@@ -42,7 +42,7 @@ module.exports = {
                     if (dates[right] > target) break;
                     right++;
                 }
-                const firstBiWeek = `${nameMonth[month - 1]} (1-15)`;
+                const firstBiWeek = `${month}. ${nameMonth[month - 1]} (1-15)`;
                 if (!data[firstBiWeek]) data[firstBiWeek] = {};
                 data[firstBiWeek][year] = getExchangeRate(timeSeriesDaily[dates[left]]['1. open'], timeSeriesDaily[dates[right - 1]]['4. close']);
                 left = right;
@@ -51,7 +51,7 @@ module.exports = {
                     if (dates[right] > target) break;
                     right++;
                 }
-                const secondBiWeek = `${nameMonth[month - 1]} (16-${endDayMonths[month - 1]})`;
+                const secondBiWeek = `${month}. ${nameMonth[month - 1]} (16-${endDayMonths[month - 1]})`;
                 if (!data[secondBiWeek]) data[secondBiWeek] = {};
                 data[secondBiWeek][year] = getExchangeRate(timeSeriesDaily[dates[left]]['1. open'], timeSeriesDaily[dates[right - 1]]['4. close']);
                 left = right;
@@ -68,7 +68,7 @@ module.exports = {
                     });
                 }
                 response.push({
-                    'month': biweek,
+                    'month': biweek.slice(4),
                     'avg': getAverage(yearsData.map(y => y['exchange_rate'])),
                     'var': getVariance(yearsData.map(y => y['exchange_rate'])),
                     'years': yearsData,
