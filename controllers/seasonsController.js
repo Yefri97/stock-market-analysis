@@ -3,6 +3,43 @@ const alphavantage = require('../utils/alphavantage');
 const getExchangeRate = (open, close) => (close - open) / open;
 
 module.exports = {
+    getSeasonalExchangeRate: function(req, res) {
+        const { symbol } = req.query;
+        console.log(symbol);
+        const data = [
+            {
+                'month': 'Jan (1 - 15)',
+                'avg': 0.65,
+                'var': 1.63,
+                'years': [
+                    {
+                        'year': 2020,
+                        'exchange_rate': 2.1,
+                    },
+                    {
+                        'year': 2021,
+                        'exchange_rate': 1.3,
+                    }
+                ]
+            },
+            {
+                'month': 'Jan (16 - 31)',
+                'avg': 1.3,
+                'var': 0.5,
+                'years': [
+                    {
+                        'year': 2020,
+                        'exchange_rate': 1.2,
+                    },
+                    {
+                        'year': 2021,
+                        'exchange_rate': 0.1,
+                    }
+                ]
+            }
+        ];
+        res.json({ data });
+    },
     getExchangeRateDaily: function(req, res) {
         const { symbol } = req.query;
         alphavantage.getTimeSeriesDaily(symbol, (timeSeriesDaily) => {
