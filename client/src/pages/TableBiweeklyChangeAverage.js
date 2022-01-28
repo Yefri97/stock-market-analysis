@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import ColorScale from "https://cdn.skypack.dev/color-scales";
 
 class TableBiweeklyChangeAverage extends Component {
-
-    state = {
-        
-    }
-
     render() {
         const containerStyle = {
             padding: "0px 0px",

@@ -1,8 +1,11 @@
 import axios from 'axios';
 
 const API = {
-    getExchangeRateDaily: function(symbol) {
+    getSeasonalExchangeRate: function(symbol) {
         return axios.get(`/api/seasons/getSeasonalExchangeRate?symbol=${symbol}`);
+    },
+    getExchangeRateDaily: function(symbol) {
+        return axios.get(`/api/seasons/getExchangeRateDaily?symbol=${symbol}`);
     },
 };
 
