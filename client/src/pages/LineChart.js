@@ -50,10 +50,12 @@ class LineChart extends Component {
     render() {
         const lineChartDatasets = this.getDatasetLineChart(this.props.datasets);
         return (
-            <Line
-                datasetIdKey='id'
-                data={lineChartDatasets}
-            />
+            <div style={{ padding: "0% 0% 0% 4%" }}>
+                <Line
+                    datasetIdKey='id'
+                    data={lineChartDatasets}
+                />
+            </div>
         );
     }
 }

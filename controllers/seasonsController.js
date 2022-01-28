@@ -32,9 +32,9 @@ const getExchangeRate = (open, close) => ((close - open) / open) * 100.0;
 
 const getDateInfo = (date) => {
   const date_split = date.split("-");
-  const year = parseInt(date_split[0]),
-    month = parseInt(date_split[1]),
-    day = parseInt(date_split[2]);
+  const year = date_split[0],
+    month = date_split[1],
+    day = date_split[2];
   return { year, month, day };
 };
 
@@ -109,7 +109,8 @@ module.exports = {
       const dates = Object.keys(timeSeriesDaily).sort();
       const table = Array.from({ length: 31 }, (_) => Array.from({ length: 12 }, (_) => []));
       for (const date of dates) {
-        const { month, day } = getDateInfo(date);
+        let { month, day } = getDateInfo(date);
+        month = parseInt(month), day = parseInt(day);
         table[day - 1][month - 1].push(
           getExchangeRate(timeSeriesDaily[date]["1. open"], timeSeriesDaily[date]["4. close"])
         );

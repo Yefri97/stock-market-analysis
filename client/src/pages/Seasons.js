@@ -18,7 +18,7 @@ class Seasons extends Component {
         const datasets = {}
         data.map(data => { months.push(data.month); avgs.push(data.avg); vars.push(data.var) })
         data.map(data => { data.years.map(years => { if (!datasets[years.year]) datasets[years.year] = []; datasets[years.year].push(years.exchange_rate) } ) })
-        this.setState({ months: months, avgs: avgs, vars: vars,  datasets: datasets});
+        this.setState({ symbolSearched: this.state.symbol, months: months, avgs: avgs, vars: vars,  datasets: datasets});
     }
 
     handleInputChange = event => {
@@ -41,7 +41,7 @@ class Seasons extends Component {
                     <input name="symbol" onChange={this.handleInputChange} />
                     <button onClick={this.handleSubmit}>Submit</button>
                 </div>
-                <TableBiweeklyChangeAverage months={this.state.months} avgs={this.state.avgs} vars={this.state.vars}/>
+                <TableBiweeklyChangeAverage symbol={this.state.symbolSearched} months={this.state.months} avgs={this.state.avgs} vars={this.state.vars.map((varz, idx) => this.state.avgs[idx] * 100.0 / varz)}/>
                 <LineChart months={this.state.months} datasets={this.state.datasets} />
             </>
         );
