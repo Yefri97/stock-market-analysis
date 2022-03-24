@@ -109,14 +109,17 @@ module.exports = {
       const dates = Object.keys(timeSeriesDaily).sort();
       const table = Array.from({ length: 31 }, (_) => Array.from({ length: 12 }, (_) => []));
       for (const date of dates) {
-        let { month, day } = getDateInfo(date);
+        let { month, day, year } = getDateInfo(date);
         month = parseInt(month), day = parseInt(day);
-        table[day - 1][month - 1].push(
-          getExchangeRate(timeSeriesDaily[date]["1. open"], timeSeriesDaily[date]["4. close"])
-        );
+        table[day - 1][month - 1].push({
+          open: timeSeriesDaily[date]["1. open"],
+          close: timeSeriesDaily[date]["4. close"],
+          value: getExchangeRate(timeSeriesDaily[date]["1. open"], timeSeriesDaily[date]["4. close"]),
+          year: year,
+        });
       }
-      const data = table.map((row) => row.map((cell) => getAverage(cell)));
-      res.json({ status: "ok", data });
+      const data = table.map((row) => row.map((cell) => getAverage(cell.map(c => c.value))));
+      res.json({ status: "ok", data, table });
     });
   },
 };

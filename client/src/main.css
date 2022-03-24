@@ -1,0 +1,29 @@
+.analytics {
+    margin-left: 10px;
+}
+
+.analytics tr {
+    background-color: #0984e3;
+}
+
+.analytics .subtitle-table {
+    background-color: #74b9ff;
+}
+
+.analytics .body-table {
+    background-color: #dfe6e9;
+}
+
+.analytics .body-table-gain {
+    background-color: #27ae60;
+}
+
+.analytics .body-table-loss {
+    background-color: #e74c3c;
+}
+
+.analytics,
+.analytics td,
+.analytics th {
+    border: 1px solid black;
+}

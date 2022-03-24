@@ -15,9 +15,7 @@ class TableBiweeklyChangeAverage extends Component {
         const getRowStyle = (row, elem) => {
             const maxElem = Math.max(...this.props[row]);
             const minElem = Math.min(...this.props[row]);
-            console.log(maxElem, minElem);
-            const cs2Stops = new ColorScale(minElem, maxElem, ["#ff0084", "#ffff84"], 1.0);
-            console.log(cs2Stops.getColor(elem).toRGBString());
+            const cs2Stops = new ColorScale(minElem, maxElem, ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"], 1.0);
             const rowstyle = {
                 border: "1px solid black",
                 backgroundColor: cs2Stops.getColor(elem).toRGBString(),
@@ -36,7 +34,7 @@ class TableBiweeklyChangeAverage extends Component {
                     </tr>
                     <tr>
                         <th>AVG</th>
-                        {this.props.avgs.map(avg => <td key={avg} style={getRowStyle('avgs', avg)}>{avg.toFixed(2)}</td>)}
+                        {this.props.avgs.map(avg => <td key={avg} style={getRowStyle('avgs', avg)}>{avg.toFixed(2)}%</td>)}
                     </tr>
                     <tr>
                         <th>VAR</th>
