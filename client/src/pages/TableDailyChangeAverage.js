@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ColorScale from "https://cdn.skypack.dev/color-scales";
 
 class TableDailyChangeAverage extends Component {
 
@@ -56,8 +55,9 @@ class TableDailyChangeAverage extends Component {
         const getRowStyle = (elem) => {
             const maxElem = Math.max(...this.props.daily_changes.flat());
             const minElem = Math.min(...this.props.daily_changes.flat());
-            const cs2Stops = new ColorScale(minElem, maxElem, ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"], 1.0);
-            const backgroundColor = elem ? cs2Stops.getColor(elem).toRGBString() : "#000000";
+            const cs2Stops = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"];
+            const idxColor = Math.round((elem - minElem) / (maxElem - minElem) * 10);
+            const backgroundColor = elem ? cs2Stops[idxColor] : "#000000";
             const rowstyle = {
                 border: "1px solid black",
                 backgroundColor: backgroundColor,

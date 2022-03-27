@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ColorScale from "https://cdn.skypack.dev/color-scales";
 
 class TableBiweeklyChangeAverage extends Component {
     render() {
@@ -15,10 +14,11 @@ class TableBiweeklyChangeAverage extends Component {
         const getRowStyle = (row, elem) => {
             const maxElem = Math.max(...this.props[row]);
             const minElem = Math.min(...this.props[row]);
-            const cs2Stops = new ColorScale(minElem, maxElem, ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"], 1.0);
+            const cs2Stops = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"];
+            const idxColor = Math.round((elem - minElem) / (maxElem - minElem) * 10);
             const rowstyle = {
                 border: "1px solid black",
-                backgroundColor: cs2Stops.getColor(elem).toRGBString(),
+                backgroundColor: cs2Stops[idxColor],
                 textAlign: "center"
             };
             return rowstyle;
