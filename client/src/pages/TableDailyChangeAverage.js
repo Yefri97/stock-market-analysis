@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class TableDailyChangeAverage extends Component {
 
@@ -13,15 +15,17 @@ class TableDailyChangeAverage extends Component {
         this.setState({ [name]: value });
     };
 
+    h = (date) => { return date.getMonth() * 31 + date.getDate() - 1; }
+
     getAnalytics = () => {
         const { table } = this.props;
-        const { initDate, endDate } = this.state;
-        if (!initDate || !endDate) return [];
+        const { startDate, endDate } = this.state;
+        if (!startDate || !endDate) return [];
         const info = {};
         for (let month = 0; month < 12; month++) {
             for (let day = 0; day < 31; day++) {
-                const current = month * 12 + day;
-                if (initDate <= current && current <= endDate) {
+                const current = month * 31 + day;
+                if (this.h(startDate) <= current && current <= this.h(endDate)) {
                     table[day][month].map(({ open, close, year }) => {
                         if (year in info) info[year]['close'] = close;
                         else info[year] = { 'open': open, 'close': close };
@@ -45,7 +49,7 @@ class TableDailyChangeAverage extends Component {
 
         const selectableDates = [];
         for (let month = 0; month < 12; month++) for (let day = 1; day <= 31; day++)
-            selectableDates.push({ value: month * 12 + (day - 1), option: months[month] + " " + day });
+            selectableDates.push({ value: month * 31 + (day - 1), option: months[month] + " " + day });
 
         const tablestyle = {
             border: "1px solid black",
@@ -75,17 +79,17 @@ class TableDailyChangeAverage extends Component {
             return ans.toFixed(2);
         };
 
-        const getAssertivity = (window) => {
+        const getAssertivity = (window, t = 1) => {
             if (analytics.length == 0) return "-";
             const total = analytics.slice(0, window).reduce((acum, curr) => acum + (curr.value > 0), 0);
             const ans = total * 100.0 / Math.min(analytics.length, window);
-            return ans.toFixed(2);
+            return t == 1 ? ans.toFixed(2) : (100 - ans).toFixed(2);
         };
 
         return (
             <div style={{ display: 'flex' }}>
                 <table style={tablestyle}>
-                    <caption>Daily Change Average</caption>
+                    <caption>Daily Change Average ({this.props.minYear} - {this.props.maxYear})</caption>
                     <tr>
                         <th scope="row" style={{border: "1px solid black"}}>{(this.props.symbol) ? this.props.symbol : 'Biweekly'}</th>
                         {months.map((month, idx) => <th key={idx} style={{border: "1px solid black"}}>{month}</th>)}
@@ -98,35 +102,37 @@ class TableDailyChangeAverage extends Component {
                     ))}
                 </table>
                 <div style={{ height: "100%", width: "24%" }}>
-                    <div style={{ marginLeft: "15px" }}>
-                        <select style={{ width: "33%", fontSize: "16px" }} name="initDate" onChange={this.handleSelectChange}>
+                    <div style={{ textAlign: 'center', marginTop: "20px", marginBottom: "10px" }}>
+                        {/*<select style={{ width: "33%", fontSize: "16px" }} name="initDate" onChange={this.handleSelectChange}>
                             <option value="">Init date</option>
                             {selectableDates.map(date => <option value={date.value}>{date.option}</option>)}
-                        </select>
-                        <select style={{ width: "33%", fontSize: "16px" }} name="endDate" onChange={this.handleSelectChange}>
+                        </select>*/}
+                        <DatePicker
+                            selected={this.state.startDate}
+                            onChange={(dates) => { const [start, end] = dates; this.setState({ startDate: start, endDate: end }); }}
+                            startDate={this.state.startDate}
+                            endDate={this.state.endDate}
+                            selectsRange
+                            inline
+                        />
+                        {/*<select style={{ width: "33%", fontSize: "16px" }} name="endDate" onChange={this.handleSelectChange}>
                             <option value="">End date</option>
                             {selectableDates.map(date => <option value={date.value}>{date.option}</option>)}
-                        </select>
-                        <select style={{ width: "33%", fontSize: "16px" }} name="trending" onChange={this.handleSelectChange}>
-                                <option value="">Tendencia</option>
-                                <option value="up">Alcista</option>
-                                <option value="dw">Bajista</option>
-                        </select>
+                        </select>*/}
                     </div>
                     <table className='analytics' style={{ height: "100%", width: "100%", textAlign: 'center' }}>
-                        <caption>Analytics</caption>
-                        <tr><th colspan="2">All time</th></tr>
-                        <tr className='subtitle-table'><td>Average</td><td>Assertivity</td></tr>
-                        <tr className='body-table'><td>{getAverage(50)}%</td><td>{getAssertivity(50)}%</td></tr>
-                        <tr><th colspan="2">Last 5 years</th></tr>
-                        <tr className='subtitle-table'><td>Average</td><td>Assertivity</td></tr>
-                        <tr className='body-table'><td>{getAverage(5)}%</td><td>{getAssertivity(5)}%</td></tr>
-                        <tr><th colspan="2">Last 10 years</th></tr>
-                        <tr className='subtitle-table'><td>Average</td><td>Assertivity</td></tr>
-                        <tr className='body-table'><td>{getAverage(10)}%</td><td>{getAssertivity(10)}%</td></tr>
-                        <tr><th colspan="2">Dates</th></tr>
-                        <tr className='subtitle-table'><td>Year</td><td>Gain/Loss</td></tr>
-                        {analytics.map(a => <tr className={a.value > 0 ? 'body-table-gain' : 'body-table-loss'}><td>{a.year}</td><td>{a.value.toFixed(4)}%</td></tr>)}
+                        <tr><th colspan="3">All time</th></tr>
+                        <tr className='subtitle-table'><td>Average</td><td colspan="2">Assertivity (Uptrend / Downtrend)</td></tr>
+                        <tr className='body-table'><td>{getAverage(50)}%</td><td>{getAssertivity(50)}%</td><td>{getAssertivity(50, -1)}%</td></tr>
+                        <tr><th colspan="3">Last 5 years</th></tr>
+                        <tr className='subtitle-table'><td>Average</td><td colspan="2">Assertivity (Uptrend / Downtrend)</td></tr>
+                        <tr className='body-table'><td>{getAverage(5)}%</td><td>{getAssertivity(5)}%</td><td>{getAssertivity(5, -1)}%</td></tr>
+                        <tr><th colspan="3">Last 10 years</th></tr>
+                        <tr className='subtitle-table'><td>Average</td><td colspan="2">Assertivity (Uptrend / Downtrend)</td></tr>
+                        <tr className='body-table'><td>{getAverage(10)}%</td><td>{getAssertivity(10)}%</td><td>{getAssertivity(10, -1)}%</td></tr>
+                        <tr><th colspan="3">Dates</th></tr>
+                        <tr className='subtitle-table'><td>Year</td><td colspan="2">Gain/Loss</td></tr>
+                        {analytics.map(a => <tr className={a.value > 0 ? 'body-table-gain' : 'body-table-loss'}><td>{a.year}</td><td colspan="2">{a.value.toFixed(4)}%</td></tr>)}
                     </table>
                 </div>
             </div>

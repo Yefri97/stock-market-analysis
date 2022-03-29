@@ -1,5 +1,7 @@
 const alphavantage = require("../utils/alphavantage");
 
+const memo = { 'getSeasonalExchangeRate': {}, 'getExchangeRateDaily': {} };
+
 const nameMonth = [
   "Jan",
   "Feb",
@@ -41,7 +43,9 @@ const getDateInfo = (date) => {
 module.exports = {
   getSeasonalExchangeRate: function (req, res) {
     const { symbol } = req.query;
+    if (symbol in memo['getSeasonalExchangeRate']) return res.json(memo['getSeasonalExchangeRate'][symbol]);
     alphavantage.getTimeSeriesDaily(symbol, (timeSeriesDaily) => {
+      if (!timeSeriesDaily) return res.json({ status: "error" });
       const data = {};
       const dates = Object.keys(timeSeriesDaily).sort();
       let left = 0,
@@ -100,12 +104,17 @@ module.exports = {
           years: yearsData,
         });
       }
-      return res.json({ status: "ok", data: response });
+      const { year: minYear } = getDateInfo(dates[0]);
+      const { year: maxYear } = getDateInfo(dates[dates.length - 1]);
+      memo['getSeasonalExchangeRate'][symbol] = { status: "ok", data: response, minYear, maxYear };
+      return res.json({ status: "ok", data: response, minYear, maxYear });
     });
   },
   getExchangeRateDaily: function (req, res) {
     const { symbol } = req.query;
+    if (symbol in memo['getExchangeRateDaily']) return res.json(memo['getExchangeRateDaily'][symbol]);
     alphavantage.getTimeSeriesDaily(symbol, (timeSeriesDaily) => {
+      if (!timeSeriesDaily) return res.json({ status: "error" });
       const dates = Object.keys(timeSeriesDaily).sort();
       const table = Array.from({ length: 31 }, (_) => Array.from({ length: 12 }, (_) => []));
       for (const date of dates) {
@@ -119,7 +128,8 @@ module.exports = {
         });
       }
       const data = table.map((row) => row.map((cell) => getAverage(cell.map(c => c.value))));
-      res.json({ status: "ok", data, table });
+      memo['getExchangeRateDaily'][symbol] = { status: "ok", data, table };
+      return res.json({ status: "ok", data, table });
     });
   },
 };

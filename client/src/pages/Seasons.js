@@ -13,18 +13,19 @@ class Seasons extends Component {
         daily_changes: [],
     }
 
-    buildBiweeklyTable = ({ data }) => {
+    buildBiweeklyTable = ({ status, data, minYear, maxYear }) => {
         const months = []
         const avgs = []
         const vars = []
         const datasets = {}
+        if (status != 'ok') return alert("Hubo un problema con el servidor, intente de nuevo");
         data.map(data => { months.push(data.month); avgs.push(data.avg); vars.push(data.var) })
         data.map(data => { data.years.map(years => { if (!datasets[years.year]) datasets[years.year] = []; datasets[years.year].push(years.exchange_rate) } ) })
-        this.setState({ symbolSearched: this.state.symbol, months: months, avgs: avgs, vars: vars,  datasets: datasets});
+        this.setState({ symbolSearched: this.state.symbol, months: months, avgs: avgs, vars: vars,  datasets: datasets, minYear, maxYear });
     }
 
-    buildDailyChangeTable = ({ data, table }) => {
-        console.log("table", table);
+    buildDailyChangeTable = ({ status, data, table }) => {
+        if (status != 'ok') return alert("Hubo un problema con el servidor, intente de nuevo");
         this.setState({ daily_changes: data, table })
     }
 
@@ -59,9 +60,9 @@ class Seasons extends Component {
         return (
             <>
                 <div style={{ margin: "25px 0px" }}>
-                    { /* <input name="symbol" onChange={this.handleInputChange} style={{ marginLeft: "45%" }} /> */ }
-                    { /* <button onClick={this.handleSubmit}>Submit</button> */ }
-                    <select name="symbol" onChange={this.handleSelectChange} style={{ marginLeft: "40%", fontSize: "20px" }}>
+                    <input name="symbol" onChange={this.handleInputChange} style={{ marginLeft: "45%" }} />
+                    <button onClick={this.handleSubmit}>Submit</button>
+                    { /* <select name="symbol" onChange={this.handleSelectChange} style={{ marginLeft: "40%", fontSize: "20px" }}>
                         <option value="">-</option>
                         <option value="VOX">Communication Services ETF (VOX)</option>
                         <option value="VCR">Consumer Discretionary ETF (VCR)</option>
@@ -74,16 +75,29 @@ class Seasons extends Component {
                         <option value="VAW">Vanguard Materials ETF (VAW)</option>
                         <option value="VNQ">Vanguard Real Estate ETF (VNQ)</option>
                         <option value="VPU">Vanguard Utilities ETF (VPU)</option>
-                    </select>
+                    </select> */ }
                 </div>
                 <br/>
                 {this.state.symbolSearched && (
                     <>
-                        <TableBiweeklyChangeAverage symbol={this.state.symbolSearched} months={this.state.months} avgs={this.state.avgs} vars={this.state.vars.map((varz, idx) => this.state.avgs[idx] * 100.0 / varz)}/>
+                        <TableBiweeklyChangeAverage
+                            symbol={this.state.symbolSearched}
+                            months={this.state.months}
+                            avgs={this.state.avgs}
+                            vars={this.state.vars.map((varz, idx) => this.state.avgs[idx] * 100.0 / varz)}
+                            minYear={this.state.minYear}
+                            maxYear={this.state.maxYear}
+                        />
                         <br/>
                         <LineChart months={this.state.months} datasets={this.state.datasets} />
                         <br/>
-                        <TableDailyChangeAverage daily_changes={this.state.daily_changes} symbol={this.state.symbol} table={this.state.table}/>
+                        <TableDailyChangeAverage
+                            daily_changes={this.state.daily_changes}
+                            symbol={this.state.symbol}
+                            table={this.state.table}
+                            minYear={this.state.minYear}
+                            maxYear={this.state.maxYear}
+                        />
                     </>
                 )}
             </>

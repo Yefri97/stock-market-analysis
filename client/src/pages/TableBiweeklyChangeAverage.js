@@ -27,7 +27,7 @@ class TableBiweeklyChangeAverage extends Component {
         return (
             <div style={containerStyle}>
                 <table style={tablestyle}>
-                    <caption>{this.props.symbol} - Biweekly Change Average</caption>
+                    <caption>{this.props.symbol} - Biweekly Change Average ({this.props.minYear} - {this.props.maxYear})</caption>
                     <tr>
                         <th scope="row">Biweekly</th>
                         {this.props.months.map(month => <th key={month} style={{border: "1px solid black"}}>{month}</th>)}
