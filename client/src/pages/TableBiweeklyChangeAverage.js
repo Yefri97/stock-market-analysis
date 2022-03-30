@@ -37,7 +37,7 @@ class TableBiweeklyChangeAverage extends Component {
                         {this.props.avgs.map(avg => <td key={avg} style={getRowStyle('avgs', avg)}>{avg.toFixed(2)}%</td>)}
                     </tr>
                     <tr>
-                        <th>VAR</th>
+                        <th>AVG / VAR</th>
                         {this.props.vars.map(varz => <td key={varz} style={getRowStyle('vars', varz)}>{varz.toFixed(2)}</td>)}
                     </tr>
                 </table>

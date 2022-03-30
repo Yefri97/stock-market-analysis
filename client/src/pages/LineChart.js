@@ -39,7 +39,7 @@ class LineChart extends Component {
                     label: year,
                     data: this.props.datasets[year],
                     borderColor: 'rgb(1, 1, 1, 0)',
-                    backgroundColor: `rgba(255,${Math.random() * (255 - 0) + 0}, 132, 0.5)`,
+                    backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.8)`,
                     pointRadius: 5,
                     pointHoverRadius: 5
                 }))
